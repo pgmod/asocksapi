@@ -1,5 +1,6 @@
 package asocksapi
 
+// Структура для создания прокси портов
 type CreatePortsReq struct {
 	CountryCode      string           `json:"country_code"`
 	City             *string          `json:"city"`

@@ -253,6 +253,7 @@ var Countries = []string{
 	"TK",
 }
 
+// Создание портов
 func (api *Api) CreatePorts(req CreatePortsReq) (*CreateProxyRsp, error) {
 	// Данные для POST-запроса
 	jsonData, err := json.Marshal(req)
@@ -273,6 +274,7 @@ func (api *Api) CreatePorts(req CreatePortsReq) (*CreateProxyRsp, error) {
 	return r, err
 }
 
+// Удаление портов
 func (api *Api) DeleteProxy(id int) (bool, error) {
 	m, e := api.doDelete("proxy/delete-port", map[string]string{
 		"id": fmt.Sprintf("%d", id),
@@ -290,6 +292,7 @@ func (api *Api) DeleteProxy(id int) (bool, error) {
 	return r.Succes, nil
 }
 
+// Получение списка стран
 func (api *Api) DirCountries() (CountriesRsp, error) {
 	b, err := api.doGet("dir/countries")
 	if err != nil {
