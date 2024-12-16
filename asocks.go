@@ -305,3 +305,16 @@ func (api *Api) DirCountries() (CountriesRsp, error) {
 	}
 	return r, nil
 }
+
+func (api *Api) ListPorts() (ListPortsRsp, error) {
+	b, err := api.doGet("proxy/ports")
+	if err != nil {
+		return ListPortsRsp{}, err
+	}
+	r := ListPortsRsp{}
+	err = json.Unmarshal(b, &r)
+	if err != nil {
+		return ListPortsRsp{}, err
+	}
+	return r, nil
+}
