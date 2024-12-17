@@ -258,50 +258,58 @@ func (api *Api) CreatePorts(req CreatePortsReq) (*CreateProxyRsp, error) {
 	// Данные для POST-запроса
 	jsonData, err := json.Marshal(req)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to marshal JSON: %w", err)
 	}
 	// Используем метод doPost для создания портов
-	m, e := api.doPost("proxy/create-port", jsonData)
-	if e != nil {
-		return nil, e
+	m, err := api.doPost("proxy/create-port", jsonData)
+	if err != nil {
+		return nil, fmt.Errorf("failed to do Post: %w", err)
 	}
 	r := &CreateProxyRsp{}
 	err = json.Unmarshal(m, &r)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to unmarshal JSON: %w", err)
 	}
 
-	return r, err
+	if r.Success {
+		return r, nil
+	}
+
+	return r, fmt.Errorf("failed to create ports: %s", r.Message)
 }
 
 // Удаление портов
 func (api *Api) DeleteProxy(id int) (bool, error) {
-	m, e := api.doDelete("proxy/delete-port", map[string]string{
+	m, err := api.doDelete("proxy/delete-port", map[string]string{
 		"id": fmt.Sprintf("%d", id),
 	})
-	if e != nil {
-		return false, e
+	if err != nil {
+		return false, fmt.Errorf("failed to do delete: %w", err)
 	}
 	r := DeleteProxyRsp{}
 
 	// fmt.Println(string(m))
-	err := json.Unmarshal(m, &r)
+	err = json.Unmarshal(m, &r)
 	if err != nil {
-		return false, err
+		return false, fmt.Errorf("failed to unmarshal JSON: %w", err)
 	}
-	return r.Succes, nil
+	if r.Success {
+		return r.Success, nil
+	}
+	return r.Success, fmt.Errorf("failed to delete proxy: %s", r.Message)
+
 }
 
 // Получение списка стран
 func (api *Api) DirCountries() (CountriesRsp, error) {
 	b, err := api.doGet("dir/countries")
 	if err != nil {
-		return CountriesRsp{}, err
+		return CountriesRsp{}, fmt.Errorf("failed to do Get: %w", err)
 	}
 	r := CountriesRsp{}
 	err = json.Unmarshal(b, &r)
 	if err != nil {
-		return CountriesRsp{}, err
+		return CountriesRsp{}, fmt.Errorf("failed to unmarshal JSON: %w", err)
 	}
 	return r, nil
 }

@@ -1,7 +1,12 @@
 package asocksapi
 
+type BaseRsp struct {
+	Message string `json:"message"`
+	Success bool   `json:"success"`
+}
+
 type CountriesRsp struct {
-	Success   bool `json:"success"`
+	BaseRsp
 	Countries []struct {
 		ID   int    `json:"id"`
 		Code string `json:"code"`
@@ -10,12 +15,12 @@ type CountriesRsp struct {
 }
 
 type CreateProxyRsp struct {
-	Succes bool        `json:"success"`
-	Data   []UserProxy `json:"data"`
+	BaseRsp
+	Data []UserProxy `json:"data"`
 }
 
 type DeleteProxyRsp struct {
-	Succes bool `json:"success"`
+	BaseRsp
 }
 
 type UserProxy struct {

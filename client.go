@@ -3,6 +3,7 @@ package asocksapi
 import (
 	"bytes"
 	"crypto/tls"
+	"fmt"
 	"io"
 	"net/http"
 	"net/url"
@@ -46,13 +47,16 @@ func (api *Api) doDelete(cmd string, params map[string]string) ([]byte, error) {
 	// Выполняем GET-запрос
 	resp, err := api.Client.Do(req)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to make DELETE request: %w", err)
 	}
 	defer resp.Body.Close()
 
 	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read response body: %w", err)
+	}
 
-	return body, err
+	return body, nil
 }
 
 // Метод для выполнения POST-запросов
@@ -65,13 +69,16 @@ func (api *Api) doPost(cmd string, body []byte) ([]byte, error) {
 	// Выполняем POST-запрос
 	resp, err := api.Client.Post(baseApiURL+cmd+"?"+queryParams.Encode(), "application/json", bytes.NewBuffer(body))
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to make POST request: %w", err)
 	}
 	defer resp.Body.Close()
 
 	body, err = io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read response body: %w", err)
+	}
 
-	return body, err
+	return body, nil
 }
 
 func (api *Api) doGet(cmd string) ([]byte, error) {
@@ -83,13 +90,16 @@ func (api *Api) doGet(cmd string) ([]byte, error) {
 	// Выполняем POST-запрос
 	resp, err := api.Client.Get(baseApiURL + cmd + "?" + queryParams.Encode())
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to make GET request: %w", err)
 	}
 	defer resp.Body.Close()
 
 	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read response body: %w", err)
+	}
 
-	return body, err
+	return body, nil
 }
 
 func (api *Api) CloseClient() {
