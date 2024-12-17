@@ -91,3 +91,7 @@ func (api *Api) doGet(cmd string) ([]byte, error) {
 
 	return body, err
 }
+
+func (api *Api) CloseClient() {
+	api.Client.CloseIdleConnections()
+}
